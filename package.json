@@ -6,8 +6,10 @@
   "type": "module",
   "scripts": {
     "start": "nodemon server.js",
+    "start:prod": "SET NODE_ENV=production&& nodemon server.js",
     "data:import": "node dev-data/data/seeder",
-    "data:destroy": "node dev-data/data/seeder -d"
+    "data:destroy": "node dev-data/data/seeder -d",
+    "debug": "ndb server.js"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +23,7 @@
     "validator": "^13.6.0"
   },
   "devDependencies": {
+    "ndb": "^1.1.5",
     "nodemon": "^2.0.12"
   }
 }
