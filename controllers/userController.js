@@ -1,6 +1,18 @@
-export const getAllUsers = (req, res) => {
-  res.status(200).json({ success: true, msg: 'All users' });
-};
+import User from '../models/userModel.js';
+import catchAsync from '../utils/catchAsync.js';
+import AppError from '../utils/appError.js';
+
+export const getAllUsers = catchAsync(async (req, res) => {
+  const users = await User.find();
+  res.status(200).json({
+    status: 'success',
+    results: users.length,
+    data: {
+      users,
+    },
+  });
+});
+
 export const getUser = (req, res) => {
   res.status(200).json({ success: true, msg: 'One users' });
 };
