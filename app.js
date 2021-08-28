@@ -11,12 +11,6 @@ import globalErrorHandler from './controllers/errorController.js';
 import tourRouter from './routes/tourRoutes.js';
 import userRouter from './routes/userRoutes.js';
 
-process.on('uncaughtException', (err) => {
-  console.log('UNHANDLED EXCEPTION! Shutting down...');
-  console.log(err.name, err.message);
-  process.exit(1);
-});
-
 const app = express();
 
 // Middleware
