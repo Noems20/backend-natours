@@ -4,7 +4,7 @@ import colors from 'colors';
 import connectDB from '../../config/db.js';
 
 // Data
-import tours from './tours-simple.js';
+import tours from './tours.js';
 
 // Model Schemas
 import Tour from '../../models/tourModel.js';

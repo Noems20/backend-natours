@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
 import validator from 'validator';
+// import User from './userModel.js';
 
 const tourSchema = new mongoose.Schema(
   {
@@ -83,6 +84,32 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      // GeoJSON
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
+    locations: [
+      // GeoJSON
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
   },
   {
     toJSON: { virtuals: true },
@@ -94,11 +121,25 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+// Virtual populate
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour', // How is called in review model
+  localField: '_id', // How is called in local model
+});
+
 // DOCUMENT MIDDLEWARE runs before .save() and .create() not insertMany(), update(), findOneAndUpdate()
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
+
+// EMBEDING
+// tourSchema.pre('save', async function (next) {
+//   const guidesQueries = this.guides.map((id) => User.findById(id)); //returns a query
+//   this.guides = await Promise.all(guidesQueries);
+//   next();
+// });
 
 // tourSchema.pre('save', function (next) {
 //   console.log('Will save documents...');
@@ -123,6 +164,11 @@ tourSchema.pre(/^find/, function (next) {
 //   console.log(`Query took ${Date.now() - this.start} milliseconds`);
 //   next();
 // });
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate('guides', '-__v -passwordChangedAt');
+  next();
+});
 
 // AGGREGATION MIDDLEWARE
 tourSchema.pre('aggregate', function (next) {

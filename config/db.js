@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { server } from '../server.js';
 
 const connectDB = () => {
   mongoose
