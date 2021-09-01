@@ -2,6 +2,9 @@ import User from '../models/userModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 
+// Handler factory
+import { deleteOne, getAll, getOne, updateOne } from './handlerFactory.js';
+
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
   Object.keys(obj).forEach((el) => {
@@ -9,17 +12,6 @@ const filterObj = (obj, ...allowedFields) => {
   });
   return newObj;
 };
-
-export const getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
 
 export const updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
@@ -58,15 +50,14 @@ export const deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-export const getUser = (req, res) => {
-  res.status(200).json({ success: true, msg: 'One users' });
-};
+export const getUser = getOne(User);
 export const createUser = (req, res) => {
-  res.status(201).json({ success: true, msg: 'Created user' });
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not defined! Please use /signup instead',
+  });
 };
-export const updateUser = (req, res) => {
-  res.status(200).json({ success: true, msg: 'Update user' });
-};
-export const deleteUser = (req, res) => {
-  res.status(204).json({ success: true, msg: 'Delete user' });
-};
+// Do not update passwords with this
+export const getAllUsers = getAll(User);
+export const updateUser = updateOne(User);
+export const deleteUser = deleteOne(User);
