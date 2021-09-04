@@ -1,4 +1,6 @@
 import Review from '../models/reviewModel.js';
+import AppError from '../utils/appError.js';
+import catchAsync from '../utils/catchAsync.js';
 
 // Handler factory
 import {
@@ -15,6 +17,15 @@ export const setTourUserIds = (req, res, next) => {
   if (!req.body.user) req.body.user = req.user.id;
   next();
 };
+
+export const checkIfAuthor = catchAsync(async (req, res, next) => {
+  const review = await Review.findById(req.params.id);
+  if (req.user.role !== 'admin') {
+    if (review.user.id !== req.user.id)
+      return next(new AppError(`You cannot edit someone's else review.`, 403));
+  }
+  next();
+});
 
 export const getAllReviews = getAll(Review);
 export const getReview = getOne(Review);
