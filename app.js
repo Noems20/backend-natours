@@ -5,6 +5,8 @@ import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 import hpp from 'hpp';
+import { fileURLToPath } from 'url';
+import path, { dirname } from 'path';
 
 // Utils
 import AppError from './utils/appError.js';
@@ -16,10 +18,18 @@ import globalErrorHandler from './controllers/errorController.js';
 import tourRouter from './routes/tourRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import reviewRouter from './routes/reviewRoutes.js';
+import viewRouter from './routes/viewRoutes.js';
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 // Middleware
+// Serving static fies
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Set security HTTP headers
 app.use(helmet());
@@ -59,10 +69,9 @@ app.use(
   })
 );
 
-// Serving static fies
-// app.use(express.static(`${__dirname}/public`))
-
 // Routes
+
+app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
