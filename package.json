@@ -2,21 +2,29 @@
   "name": "starter",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
+  "targets": {
+    "main": false
+  },
   "type": "module",
   "scripts": {
     "start": "nodemon server.js",
     "start:prod": "SET NODE_ENV=production&& nodemon server.js",
     "data:import": "node dev-data/data/seeder",
     "data:destroy": "node dev-data/data/seeder -d",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "watch:js": "parcel watch --no-hmr ./public/js/index.js --out-dir ./public/js --out-file bundle.js --public-url ./",
+    "build": "parcel build ./public/js/index.js --dist-dir ./public/js/bundled"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "axios": "^0.21.4",
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
+    "cookie-parser": "^1.4.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-mongo-sanitize": "^2.1.0",
@@ -33,6 +41,7 @@
   },
   "devDependencies": {
     "ndb": "^1.1.5",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.12",
+    "parcel-bundler": "^1.12.5"
   }
 }
